@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>description</key>
+		<string>New World Hotel</string>
+		<key>latitude</key>
+		<string>10.770964</string>
+		<key>longitude</key>
+		<string>106.695946</string>
+	</dict>
+	<dict>
+		<key>description</key>
+		<string>Hotel Continental Saigon</string>
+		<key>latitude</key>
+		<string>10.776965</string>
+		<key>longitude</key>
+		<string>106.702480</string>
+	</dict>
+	<dict>
+		<key>description</key>
+		<string>Majestic Hotel Saigon</string>
+		<key>latitude</key>
+		<string>10.772661</string>
+		<key>longitude</key>
+		<string>106.706126</string>
+	</dict>
+	<dict>
+		<key>description</key>
+		<string>Caravelle Hotel Saigon</string>
+		<key>latitude</key>
+		<string>10.776377</string>
+		<key>longitude</key>
+		<string>106.703574</string>
+	</dict>
+</array>
+</plist>
