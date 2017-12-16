@@ -14,15 +14,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
 
     
     // MARK: properties
-    var locations = [PointOfInterest]()
+    var poilocations = [PointOfInterest]()
     
     var map: MKMapView = {
         let mv = MKMapView()
         mv.mapType = MKMapType.standard
         mv.showsCompass = true
         mv.showsScale = true
+        mv.showsUserLocation = true
         mv.translatesAutoresizingMaskIntoConstraints = false
         return mv
+    }()
+    
+    let currentLocationButton: UIButton = {
+        let button = UIButton(type: UIButtonType.system)
+        button.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
+        button.setTitle("Current Location", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitleColor(UIColor.white, for: UIControlState.normal)
+        button.addTarget(self, action: #selector(moveToCurrentLocation), for: UIControlEvents.touchUpInside)
+        return button
     }()
     
     let manager = CLLocationManager()
@@ -34,6 +45,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         view.backgroundColor = UIColor.purple
         view.addSubview(map)
+        view.addSubview(currentLocationButton)
         
         manager.delegate = self
         manager.desiredAccuracy  = kCLLocationAccuracyBest
@@ -53,7 +65,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             if let _locationList = NSArray(contentsOfFile: path) {
                 for item in _locationList {
                     if let _location = item as? [String: Any] {
-                        locations.append(PointOfInterest(description: (_location["description"] as? String)!, latitude: (_location["latitude"] as? String)!, longitude: (_location["longitude"] as? String)!))
+                        poilocations.append(PointOfInterest(description: (_location["description"] as? String)!, latitude: (_location["latitude"] as? String)!, longitude: (_location["longitude"] as? String)!))
                     }
                 }
             }
@@ -62,9 +74,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     /* put locations from locations onto map*/
     func fillLocationIntoMap() {
-        for location in locations {
+        for location in poilocations {
             map.addAnnotation(location.getAnnotation())
         }
+    }
+    
+    @objc func moveToCurrentLocation() {
+        manager.startUpdatingLocation()
     }
     
     // MARK: CLLocationManagerDelegate
@@ -86,6 +102,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         annotation.title = "MY CURRENT LOCATION"
         annotation.subtitle = "lat: \(annotation.coordinate.latitude) - long: \(annotation.coordinate.longitude)"
         map.addAnnotation(annotation)
+        manager.stopUpdatingLocation()
         
     }
     
@@ -94,10 +111,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     // MARK: Views
     func setupViews()
     {
+        // Map
         map.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         map.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         map.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         map.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        
+        // Current Location Button
+        currentLocationButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 4/5).isActive = true
+        currentLocationButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        currentLocationButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12).isActive = true
+        currentLocationButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
    
 
