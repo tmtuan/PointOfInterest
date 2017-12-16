@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import UserNotifications
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
@@ -56,6 +57,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         fetchLocations()
         fillLocationIntoMap()
         
+        // Notification
+        // Ask for sending notification permission
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: {
+            didAllow, error in
+        })
+        
+       
     }
 
     // MARK: methods
@@ -88,13 +96,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         let location = locations[0]
         
         let span: MKCoordinateSpan = MKCoordinateSpanMake(0.01, 0.01)
-        
         let myLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-        
         let region:MKCoordinateRegion = MKCoordinateRegion(center: myLocation, span: span)
         
         map.setRegion(region, animated: true)
-        
         self.map.showsUserLocation = true
         
         let annotation = MKPointAnnotation()
@@ -102,11 +107,22 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         annotation.title = "MY CURRENT LOCATION"
         annotation.subtitle = "lat: \(annotation.coordinate.latitude) - long: \(annotation.coordinate.longitude)"
         map.addAnnotation(annotation)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "Intro"), object: nil)
+        
+        // Notification content
+        if ((location.coordinate.latitude == locations[0].coordinate.latitude) && (location.coordinate.longitude == locations[0].coordinate.longitude)) {
+            let content = UNMutableNotificationContent()
+            content.title = "Notification Title"
+            content.body = "Amazing Hotel"
+            content.badge = 1
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+            let request = UNNotificationRequest(identifier: "PointOfInterest", content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        }
         manager.stopUpdatingLocation()
         
     }
-    
-    
     
     // MARK: Views
     func setupViews()
